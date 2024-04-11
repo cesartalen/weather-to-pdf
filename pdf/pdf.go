@@ -9,6 +9,7 @@ import (
 	"github.com/johnfercher/maroto/v2"
 	"github.com/johnfercher/maroto/v2/pkg/components/text"
 	"github.com/johnfercher/maroto/v2/pkg/core"
+	"github.com/johnfercher/maroto/v2/pkg/props"
 )
 
 func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
@@ -42,7 +43,9 @@ func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
 
 		formattedTime := parsedTime.Format("January 02 Monday")
 
-		m.AddRow(10, text.NewCol(5, formattedTime))
+		m.AddRow(10, text.NewCol(10, formattedTime, props.Text{
+			Size: 12,
+		}))
 		m.AddRow(5, timeCols...)
 		m.AddRow(10, tempCols...)
 	}
