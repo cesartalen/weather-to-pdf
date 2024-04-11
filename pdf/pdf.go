@@ -2,25 +2,27 @@ package pdf
 
 import (
 	"cesartalen/weather-to-pdf/weather"
+	"fmt"
 	"log"
 
 	"github.com/johnfercher/maroto/v2"
-	"github.com/johnfercher/maroto/v2/pkg/components/col"
 	"github.com/johnfercher/maroto/v2/pkg/components/text"
 )
 
 func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
 	m := maroto.New()
 
-	m.AddRow(20,
-		text.NewCol(4, "Text"),
-	)
+	for i := 0; i < len(weatherData.Hourly.Time); i++ {
+		if (i % 24) == 0 {
+		}
 
-	m.AddRow(10, col.New(12))
+		temp := fmt.Sprintf("%.1f", weatherData.Hourly.Temperature2m[i])
 
-	m.AddRow(20,
-		text.NewCol(4, "Text"),
-	)
+		m.AddRow(5,
+			text.NewCol(4, string(weatherData.Hourly.Time[i])),
+			text.NewCol(4, temp),
+		)
+	}
 
 	document, err := m.Generate()
 	if err != nil {
