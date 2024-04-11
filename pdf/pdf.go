@@ -1,6 +1,7 @@
 package pdf
 
 import (
+	"cesartalen/weather-to-pdf/weather"
 	"log"
 
 	"github.com/johnfercher/maroto/v2"
@@ -8,7 +9,7 @@ import (
 	"github.com/johnfercher/maroto/v2/pkg/components/text"
 )
 
-func GeneratePDF(filename string) error {
+func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
 	m := maroto.New()
 
 	m.AddRow(20,
