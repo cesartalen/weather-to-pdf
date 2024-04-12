@@ -17,8 +17,40 @@ import (
 func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
 	m := initializePDF()
 
+	// Add header and forecast data to the PDF
 	addHeader(m, weatherData)
+	addForecastData(m, weatherData)
 
+	// Generate the PDF
+	document, err := m.Generate()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Save the PDF
+	err = document.Save(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
+
+// Initialize maroto for PDF creation
+func initializePDF() core.Maroto {
+	cfg := config.NewBuilder().WithMargins(10, 15, 10).Build()
+	return maroto.New(cfg)
+}
+
+// Add header to the PDF
+func addHeader(m core.Maroto, weatherData weather.WeatherResponse) {
+	m.AddRow(5, text.NewCol(12, "Weather Forecast", props.Text{Align: align.Right}))
+	m.AddRow(5, text.NewCol(12, time.Now().Format("2006-01-02 15:04"), props.Text{Align: align.Right}))
+	m.AddRow(12, text.NewCol(12, fmt.Sprintf("Timezone: %s", weatherData.TimezoneAbbrev), props.Text{Align: align.Right}))
+}
+
+// Add forecast data to the PDF
+func addForecastData(m core.Maroto, weatherData weather.WeatherResponse) {
 	// For every day, divides by 24 to get count of days.
 	for i := 0; i < (len(weatherData.Hourly.Time) / 24); i++ {
 		tempCols := make([]core.Col, 0, 7)
@@ -53,30 +85,4 @@ func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
 		m.AddRow(5, timeCols...)
 		m.AddRow(20, tempCols...)
 	}
-
-	document, err := m.Generate()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Save the PDF
-	err = document.Save(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return nil
-}
-
-// Initialize maroto for PDF creation
-func initializePDF() core.Maroto {
-	cfg := config.NewBuilder().WithMargins(10, 15, 10).Build()
-	return maroto.New(cfg)
-}
-
-// Add header to the PDF
-func addHeader(m core.Maroto, weatherData weather.WeatherResponse) {
-	m.AddRow(5, text.NewCol(12, "Weather Forecast", props.Text{Align: align.Right}))
-	m.AddRow(5, text.NewCol(12, time.Now().Format("2006-01-02 15:04"), props.Text{Align: align.Right}))
-	m.AddRow(12, text.NewCol(12, fmt.Sprintf("Timezone: %s", weatherData.TimezoneAbbrev), props.Text{Align: align.Right}))
 }
