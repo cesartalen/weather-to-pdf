@@ -15,23 +15,24 @@ import (
 )
 
 func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
+	// Initialize maroto for PDF creation
 	cfg := config.NewBuilder().WithMargins(10, 15, 10).Build()
 	m := maroto.New(cfg)
 
+	// Add title, date, timezone
 	m.AddRow(5, text.NewCol(12, "Weather Forecast", props.Text{Align: align.Right}))
 	m.AddRow(5, text.NewCol(12, time.Now().Format("2006-01-02 15:04"), props.Text{Align: align.Right}))
 	m.AddRow(12, text.NewCol(12, fmt.Sprintf("Timezone: %s", weatherData.TimezoneAbbrev), props.Text{Align: align.Right}))
+
 	// For every day, divides by 24 to get count of days.
 	for i := 0; i < (len(weatherData.Hourly.Time) / 24); i++ {
 		tempCols := make([]core.Col, 0, 7)
 		timeCols := make([]core.Col, 0, 7)
 
-		/* j*3 because 24/8 = 3, dividing day into 8 parts. Loops 8 times for every days worth of data. Should not need to be modified if more days are added.
-		Doing this to make the data fit better on the page.
-		Stores data in two cols so time can be put in a row above temp.
-		*/
+		// Loops 8 times every day, to make an 3-hourly forecast
 		for j := 0; j <= 7; j++ {
 			index := i*24 + j*3
+
 			tempCols = append(tempCols, text.NewCol(1, fmt.Sprintf("%.1f °C", weatherData.Hourly.Temperature2m[index]), props.Text{Left: 20}))
 
 			parsedTime, err := time.Parse("2006-01-02T15:04", weatherData.Hourly.Time[index])
@@ -49,6 +50,7 @@ func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
 
 		formattedTime := parsedTime.Format("January 02 Monday")
 
+		// Add date, time and temperature rows
 		m.AddRow(5, text.NewCol(10, formattedTime, props.Text{
 			Size: 12,
 			Left: 10,
@@ -62,6 +64,7 @@ func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
 		log.Fatal(err)
 	}
 
+	// Save the PDF
 	err = document.Save(filename)
 	if err != nil {
 		log.Fatal(err)
