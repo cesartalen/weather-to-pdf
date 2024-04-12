@@ -19,7 +19,7 @@ func main() {
 	locationData = weather.FetchLocation(city)
 	weatherData = weather.FetchWeather(locationData.Latitude, locationData.Longitude)
 
-	err := pdf.GeneratePDF("weather.pdf", weatherData)
+	err := pdf.GeneratePDF("weather.pdf", weatherData, locationData)
 	if err != nil {
 		log.Fatal(err)
 	}
