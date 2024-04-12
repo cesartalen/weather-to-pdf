@@ -1,10 +1,11 @@
 package pdf
 
 import (
-	"cesartalen/weather-to-pdf/weather"
 	"fmt"
 	"log"
 	"time"
+
+	"github.com/cesartalen/weather-to-pdf/weather"
 
 	"github.com/johnfercher/maroto/v2"
 	"github.com/johnfercher/maroto/v2/pkg/components/text"

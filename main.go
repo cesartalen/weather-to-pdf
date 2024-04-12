@@ -1,10 +1,11 @@
 package main
 
 import (
-	"cesartalen/weather-to-pdf/pdf"
-	"cesartalen/weather-to-pdf/weather"
 	"log"
 	"os"
+
+	"github.com/cesartalen/weather-to-pdf/pdf"
+	"github.com/cesartalen/weather-to-pdf/weather"
 )
 
 func main() {
