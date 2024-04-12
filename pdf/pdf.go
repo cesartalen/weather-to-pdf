@@ -15,9 +15,7 @@ import (
 )
 
 func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
-	// Initialize maroto for PDF creation
-	cfg := config.NewBuilder().WithMargins(10, 15, 10).Build()
-	m := maroto.New(cfg)
+	m := initializePDF()
 
 	// Add title, date, timezone
 	m.AddRow(5, text.NewCol(12, "Weather Forecast", props.Text{Align: align.Right}))
@@ -71,4 +69,10 @@ func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
 	}
 
 	return nil
+}
+
+// Initialize maroto for PDF creation
+func initializePDF() core.Maroto {
+	cfg := config.NewBuilder().WithMargins(10, 15, 10).Build()
+	return maroto.New(cfg)
 }
