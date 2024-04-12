@@ -14,11 +14,11 @@ import (
 	"github.com/johnfercher/maroto/v2/pkg/props"
 )
 
-func GeneratePDF(filename string, weatherData weather.WeatherResponse) error {
+func GeneratePDF(filename string, weatherData weather.WeatherResponse, locationData weather.Location) error {
 	m := initializePDF()
 
 	// Add header and forecast data to the PDF
-	addHeader(m, weatherData)
+	addHeader(m, weatherData, locationData)
 	addForecastData(m, weatherData)
 
 	// Generate the PDF
@@ -43,8 +43,9 @@ func initializePDF() core.Maroto {
 }
 
 // Add header to the PDF
-func addHeader(m core.Maroto, weatherData weather.WeatherResponse) {
+func addHeader(m core.Maroto, weatherData weather.WeatherResponse, locationData weather.Location) {
 	m.AddRow(5, text.NewCol(12, "Weather Forecast", props.Text{Align: align.Right}))
+	m.AddRow(5, text.NewCol(12, fmt.Sprintf("%s, %s %s", locationData.Name, locationData.Country, locationData.CountryCode), props.Text{Align: align.Right}))
 	m.AddRow(5, text.NewCol(12, time.Now().Format("2006-01-02 15:04"), props.Text{Align: align.Right}))
 	m.AddRow(12, text.NewCol(12, fmt.Sprintf("Timezone: %s", weatherData.TimezoneAbbrev), props.Text{Align: align.Right}))
 }
